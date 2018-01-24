@@ -69,3 +69,9 @@
 	border: 1px solid #000000;
 	outline: 1px solid #000000;
 }
+
+#hints {
+  display: grid;
+  grid-template-columns: 50% 50%;
+  margin-left: 10%
+}
