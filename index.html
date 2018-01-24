@@ -3,25 +3,33 @@
   <head>
     <meta charset="utf-8">
     <title></title>
-    <link rel="stylesheet" href="style.css">
-    <script src="src/board.js" charset="utf-8"></script>
-    <script src="src/app.js" charset="utf-8"></script>
-    <script src="src/index.js" charset="utf-8"></script>
+    <link rel="stylesheet" href="stylesheets/style.css">
+    <script src="app/board.js" charset="utf-8"></script>
+    <script src="app/app.js" charset="utf-8"></script>
+    <script src="app/index.js" charset="utf-8"></script>
   </head>
   <body>
     <div class="wrapper">
 
       <div id="nav-bar">
 
-
+        <select id="choose-board" prompt="true">
+          <option value="" disabled selected hidden>Please Choose...</option>
+        </select>
 
       </div>
 
       <div id="main-content">
 
-        <div id="board">
+        <div id="board-container">
+          <div id="board">
 
-          
+
+          </div>
+        </div>
+
+        <div id="hints">
+
         </div>
 
       </div>
