@@ -1,11 +1,13 @@
 #main-content {
 	position: relative;
 	background: #FFFFFF;
+	display: grid;
+	grid-template-columns: 50% 50%;
 }
 
 #board-container {
   position: relative;
-  width: 40%;
+  width: 100%;
 }
 
 #board-container:before {
@@ -14,7 +16,7 @@
     padding-top: 100%; /* initial ratio of 1:1*/
 }
 
-#board {
+.board {
 	position: absolute;
   top:      0;
   left:     0;
@@ -23,12 +25,26 @@
 	z-index: 1;
 	background: transparent;
 	border: 1px solid #000000;
-	/* width: 40%;
-	height: 40%; */
 	display: grid;
 	list-style-type: none;
 	padding: 0;
 	margin: 0 auto;
+}
+
+.crossword-board--labels {
+	position: absolute;
+	z-index: 60;
+}
+.crossword-board__item-label {
+	position: relative;
+}
+.crossword-board__item-label-text {
+	position: absolute;
+	top: 4%;
+	left: 4%;
+	font-size: 20%;
+	font-weight: bold;
+	line-height: 1;
 }
 
 .crossword-board__item {

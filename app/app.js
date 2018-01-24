@@ -2,7 +2,7 @@ class App {
   static init(){
     App.navBar = document.getElementById("nav-bar")
     App.mainContent = document.getElementById("main-content")
-    App.board = document.getElementById("board")
+    App.board = document.querySelector(".board")
     App.hints = document.getElementById("hints")
     App.chooseBoard = document.getElementById("choose-board")
     App.renderBoardOptions()
@@ -26,6 +26,11 @@ class App {
   }
 
   static clearBoard(){
-    App.board.innerHTML = ""
+    App.board.innerHTML = ''
+    App.hints.innerHTML = "<dl id='across'> <dt>Across</dt> </dl> <dl id='down'> <dt>Down</dt> </dl>"
+  }
+
+  hintHoverHandler(event) {
+    
   }
 }
