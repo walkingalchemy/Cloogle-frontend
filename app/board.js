@@ -1,5 +1,6 @@
 class Board {
-  constructor({answers, clues, grid, gridnums, size, author, editor, dow, date, publisher, title}){
+  constructor(id, {answers, clues, grid, gridnums, size, author, editor, dow, date, publisher, title}){
+    this.id = id
     this.answers = answers
     this.hints = clues
     this.grid = grid
@@ -45,7 +46,9 @@ class Board {
         for (let idx in this.hints['down']) {
           if (this.hints['down'][idx].split('.')[0] == this.gridnums[index]) {
             for (let char in this.answers['down'][idx]) {
-              App.board.children[parseInt(index) + parseInt(char) * this.width].dataset.down = this.gridnums[index]
+              if ((parseInt(index) + parseInt(char) * this.width) < App.board.children.length){
+                App.board.children[parseInt(index) + parseInt(char) * this.width].dataset.down = this.gridnums[index]
+              }
             }
           }
         }
@@ -120,6 +123,7 @@ class Board {
     input.setAttribute("maxlength", 1)
     input.className = "crossword-board__item"
     input.id = `item${cell[0]}-${cell[1]}`
+    input.dataset.index = cell[3]
     // input.value = cell[2]
     return input
   }
@@ -128,7 +132,7 @@ class Board {
     let letter = this.grid[idx]
     let x = Math.floor(idx / this.width)
     let y = idx % this.width
-    return [x, y, letter]
+    return [x, y, letter, idx]
   }
 
   labelFromIndex(idx) {

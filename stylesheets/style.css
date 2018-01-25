@@ -6,7 +6,7 @@
   margin: 0;
 }
 
-#choose-board {
+#nav-bar > select {
   margin-right: 10%
 }
 
@@ -90,7 +90,7 @@
 	position: relative;
 	z-index: 100;
 	text-align: center;
-	font-size: 3vmin;
+	font-size: 2.5vmin;
 	font-weight: bold;
 	text-transform: uppercase;
 }
