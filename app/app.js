@@ -4,7 +4,7 @@ class App {
     App.mainContent = document.getElementById("main-content")
     App.board = document.querySelector(".board")
     App.hints = document.getElementById("hints")
-    App.info = document.getElementById("info")
+
     App.chooseBoard = document.getElementById("choose-board")
     App.renderBoardOptions()
     App.chooseBoard.addEventListener("change", App.handleBoardChoice)
@@ -37,26 +37,26 @@ class App {
     App.info.innerHTML = ''
   }
 
-  static hintHoverHandler(event) {
-  	if ((event.target.tagName.toLowerCase() === 'dd') && (event.type === 'mouseover')){
-      event.target.style.background = App.colors[2]
-      document.getElementById(`label-${event.target.id.split('-')[1]}`).style.background = App.colors[2]
-
-    }
-    if ((event.target.tagName.toLowerCase() === 'dd') && (event.type === 'mouseout')){
-      event.target.style.background = 'white'
-      document.getElementById(`label-${event.target.id.split('-')[1]}`).style.background = 'white'
-    }
-  }
-  static boardHoverHandler(event) {
-    console.log(event)
-    // if ((event.target.tagName.toLowerCase() === 'span') && (event.type === 'mouseover')){
-    //   event.target.style.background = 'aliceblue'
-    // }
-    // if ((event.target.tagName.toLowerCase() === 'span') && (event.type === 'mouseout')){
-    //   event.target.style.background = 'white'
-    // }
-  }
+  // static hintHoverHandler(event) {
+  // 	if ((event.target.tagName.toLowerCase() === 'dd') && (event.type === 'mouseover')){
+  //     event.target.style.background = App.colors[2]
+  //     document.getElementById(`label-${event.target.id.split('-')[1]}`).style.background = App.colors[2]
+  //
+  //   }
+  //   if ((event.target.tagName.toLowerCase() === 'dd') && (event.type === 'mouseout')){
+  //     event.target.style.background = 'white'
+  //     document.getElementById(`label-${event.target.id.split('-')[1]}`).style.background = 'white'
+  //   }
+  // }
+  // static boardHoverHandler(event) {
+  //   console.log(event)
+  //   // if ((event.target.tagName.toLowerCase() === 'span') && (event.type === 'mouseover')){
+  //   //   event.target.style.background = 'aliceblue'
+  //   // }
+  //   // if ((event.target.tagName.toLowerCase() === 'span') && (event.type === 'mouseout')){
+  //   //   event.target.style.background = 'white'
+  //   // }
+  // }
 
 
 

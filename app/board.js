@@ -1,6 +1,6 @@
 class Board {
   constructor({answers, clues, grid, gridnums, size, author, editor, dow, date, publisher, title}){
-    this.puzzles = answers
+    this.answers = answers
     this.hints = clues
     this.grid = grid
     this.gridnums = gridnums
@@ -15,7 +15,7 @@ class Board {
     this.renderBoard()
     this.renderBoardLabels()
     this.renderHints()
-    this.renderInfo()
+    this.renderAnswerLocations()
   }
 
   renderBoard(){
@@ -28,6 +28,20 @@ class Board {
         App.board.append(this.createInput(cell))
       }
       App.board.style.setProperty("grid-template", `repeat(${this.width},${100/this.width}%) / repeat(${this.height},${100/this.height}%)`)
+    }
+  }
+
+  renderAnswerLocations() {
+    for (let index in this.gridnum) {
+      if (this.gridnum[index] != 0) {
+        for (let idx in this.hints['across']) {
+          if (this.hints[across][idx].split('.')[0] == this.gridnum[index]) {
+            for (let char in answers['across'][idx].length) {
+              debugger
+            }
+          }
+        }
+      }
     }
   }
 
@@ -59,18 +73,7 @@ class Board {
     }
   }
 
-  renderInfo() {
-    let infoDiv = document.createElement('div')
-    infoDiv.innerHTML = `
-    <p>Title: ${this.title}</p>
-    <p>Day of the Week: ${this.day}</p>
-    <p>Date: ${this.date}</p>
-    <p>Author: ${this.author}</p>
-    <p>Editor: ${this.editor}</p>
-    <p>Publisher: ${this.publisher}</p>
-    `
-    App.info.append(infoDiv)
-  }
+
 
   createLabel(label){
     let outerSpan = document.createElement("span")
