@@ -27,10 +27,34 @@ class App {
 
   static clearBoard(){
     App.board.innerHTML = ''
+    App.board.addEventListener('mouseover', App.boardHoverHandler)
+    App.board.addEventListener('mouseout', App.boardHoverHandler)
     App.hints.innerHTML = "<dl id='across'> <dt>Across</dt> </dl> <dl id='down'> <dt>Down</dt> </dl>"
+    App.hints.addEventListener('mouseover', App.hintHoverHandler)
+    App.hints.addEventListener('mouseout', App.hintHoverHandler)
   }
 
-  hintHoverHandler(event) {
-    
+  static hintHoverHandler(event) {
+  	if ((event.target.tagName.toLowerCase() === 'dd') && (event.type === 'mouseover')){
+  		event.target.style.background = 'aliceblue'
+      document.getElementById(`label-${event.target.id.split('-')[1]}`).style.background = 'aliceblue'
+
+    }
+    if ((event.target.tagName.toLowerCase() === 'dd') && (event.type === 'mouseout')){
+      event.target.style.background = 'white'
+      document.getElementById(`label-${event.target.id.split('-')[1]}`).style.background = 'white'
+    }
   }
+  static boardHoverHandler(event) {
+    console.log(event)
+    // if ((event.target.tagName.toLowerCase() === 'span') && (event.type === 'mouseover')){
+    //   event.target.style.background = 'aliceblue'
+    // }
+    // if ((event.target.tagName.toLowerCase() === 'span') && (event.type === 'mouseout')){
+    //   event.target.style.background = 'white'
+    // }
+  }
+
+
+
 }
