@@ -61,7 +61,6 @@ class App {
 
 
   static boardHoverHandler(event) {
-    console.log(event.target.dataset.across)
     if ((event.target.tagName.toLowerCase() === 'input') && (event.type === 'mouseover')){
 
       if (event.target.dataset.across){
