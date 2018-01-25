@@ -18,7 +18,7 @@ class Board {
     this.renderAnswerLocations()
   }
 
-  renderBoard(){
+  renderBoard() {
     App.resetBoard()
     for (let idx in this.grid){
       let cell = this.cellFromIndex(idx)
@@ -75,7 +75,7 @@ class Board {
 
 
 
-  createLabel(label){
+  createLabel(label) {
     let outerSpan = document.createElement("span")
     outerSpan.className = `crossword-board__item-label crossword-board__item-label--${label[2]}`
     outerSpan.id = `label-${label[2]}`
@@ -87,16 +87,14 @@ class Board {
     return outerSpan
   }
 
-  createSpan(cell){
-    // cell = [x,y,"*"]
+  createSpan(cell) {
     let span = document.createElement("span")
     span.className = "crossword-board__item--blank"
     span.id = `item${cell[0]}-${cell[1]}`
     return span
   }
 
-  createInput(cell){
-    // cell = [x,y,"*"]
+  createInput(cell) {
     let input = document.createElement("input")
     input.type = "text"
     input.setAttribute("maxlength", 1)
@@ -106,14 +104,14 @@ class Board {
     return input
   }
 
-  cellFromIndex(idx){
+  cellFromIndex(idx) {
     let letter = this.grid[idx]
     let x = Math.floor(idx / this.width)
     let y = idx % this.width
     return [x, y, letter]
   }
 
-  labelFromIndex(idx){
+  labelFromIndex(idx) {
     let label = this.gridnums[idx]
     let x = Math.floor(idx / this.width)
     let y = idx % this.width
