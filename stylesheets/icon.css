@@ -1,4 +1,4 @@
-.icon {
+#icon {
 
   padding:0;
   margin-left: 0;
@@ -13,7 +13,7 @@
   z-index: 2;
 }
 
-.cloogle {
+#cloogle {
   padding:0;
   margin-left: 0;
   margin-right: 0;
@@ -22,7 +22,7 @@
   float: inherit;
 }
 
-.powered {
+#powered {
   font-size: 30%;
 }
 

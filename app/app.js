@@ -4,6 +4,7 @@ class App {
     App.mainContent = document.getElementById("main-content")
     App.board = document.querySelector(".board")
     App.hints = document.getElementById("hints")
+    App.info = document.getElementById("info")
     App.chooseBoard = document.getElementById("choose-board")
     App.renderBoardOptions()
     App.chooseBoard.addEventListener("change", App.handleBoardChoice)
@@ -26,13 +27,14 @@ class App {
     }
   }
 
-  static clearBoard(){
+  static resetBoard(){
     App.board.innerHTML = ''
     App.board.addEventListener('mouseover', App.boardHoverHandler)
     App.board.addEventListener('mouseout', App.boardHoverHandler)
     App.hints.innerHTML = "<dl id='across'> <dt>Across</dt> </dl> <dl id='down'> <dt>Down</dt> </dl>"
     App.hints.addEventListener('mouseover', App.hintHoverHandler)
     App.hints.addEventListener('mouseout', App.hintHoverHandler)
+    App.info.innerHTML = ''
   }
 
   static hintHoverHandler(event) {

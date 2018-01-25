@@ -1,19 +1,25 @@
 class Board {
-  constructor({answers, clues, grid, gridnums, size, title}){
+  constructor({answers, clues, grid, gridnums, size, author, editor, dow, date, publisher, title}){
     this.puzzles = answers
     this.hints = clues
     this.grid = grid
     this.gridnums = gridnums
     this.width = size["cols"]
     this.height = size["rows"]
+    this.author = author
+    this.editor = editor
+    this.day = dow
+    this.date = date
+    this.publisher = publisher
     this.title = title
     this.renderBoard()
     this.renderBoardLabels()
     this.renderHints()
+    this.renderInfo()
   }
 
   renderBoard(){
-    App.clearBoard()
+    App.resetBoard()
     for (let idx in this.grid){
       let cell = this.cellFromIndex(idx)
       if (this.grid[idx] === "."){
@@ -51,6 +57,19 @@ class Board {
       downDd.innerText = `${this.hints['down'][idx]}`
       document.getElementById('down').append(downDd)
     }
+  }
+
+  renderInfo() {
+    let infoDiv = document.createElement('div')
+    infoDiv.innerHTML = `
+    <p>Title: ${this.title}</p>
+    <p>Day of the Week: ${this.day}</p>
+    <p>Date: ${this.date}</p>
+    <p>Author: ${this.author}</p>
+    <p>Editor: ${this.editor}</p>
+    <p>Publisher: ${this.publisher}</p>
+    `
+    App.info.append(infoDiv)
   }
 
   createLabel(label){
