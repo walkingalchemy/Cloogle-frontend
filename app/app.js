@@ -7,6 +7,7 @@ class App {
     App.chooseBoard = document.getElementById("choose-board")
     App.renderBoardOptions()
     App.chooseBoard.addEventListener("change", App.handleBoardChoice)
+    App.colors = ["#FBBC05","EA4335","#34A853","#4285F4"]
   }
 
   static async handleBoardChoice(event){
@@ -34,11 +35,10 @@ class App {
     App.hints.addEventListener('mouseout', App.hintHoverHandler)
   }
 
-<<<<<<< HEAD
   static hintHoverHandler(event) {
   	if ((event.target.tagName.toLowerCase() === 'dd') && (event.type === 'mouseover')){
-  		event.target.style.background = 'aliceblue'
-      document.getElementById(`label-${event.target.id.split('-')[1]}`).style.background = 'aliceblue'
+      event.target.style.background = App.colors[2]
+      document.getElementById(`label-${event.target.id.split('-')[1]}`).style.background = App.colors[2]
 
     }
     if ((event.target.tagName.toLowerCase() === 'dd') && (event.type === 'mouseout')){
@@ -58,10 +58,4 @@ class App {
 
 
 
-=======
-  hintHoverHandler(event) {
-
-  }
-
->>>>>>> 190d086a7fd35d7e63f35e811a710859b5e58c7d
 }

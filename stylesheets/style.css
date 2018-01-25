@@ -21,7 +21,7 @@
 	grid-template-columns: 40% 60%;
   grid-template-rows: 70% auto;
   height: 100%;
-  border: 2px solid green;
+  /* border: 2px solid green; */
 }
 
 #hints {
@@ -92,7 +92,7 @@
 #hint-container {
   overflow:scroll;
   grid-area: 1 / 2 / 3/ 2;
-  border: 2px solid red;
+  /* border: 2px solid red; */
 }
 
 #hints {

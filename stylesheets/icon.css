@@ -1,0 +1,63 @@
+.icon {
+
+  padding:0;
+  margin-left: 0;
+  margin-right: 0;
+  margin-top: 0;
+  margin-bottom: 0;
+  float: inherit;
+  /* // font-size: 120px; */
+  font-size: 5vmin;
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  z-index: 2;
+}
+
+.cloogle {
+  padding:0;
+  margin-left: 0;
+  margin-right: 0;
+  margin-top: -12%;
+  margin-bottom: 0;
+  float: inherit;
+  /* font-family: sans-serif; */
+  /* // font-size: 95px; */
+  font-size: 5vmin;
+}
+
+.powered {
+  font-size: 30%;
+}
+
+.yellow {
+  color: #FBBC05;
+}
+
+.yellow:hover {
+  color: #7CBB00;
+}
+
+.red {
+  color: #EA4335;
+}
+
+.red:hover {
+  color: #FF8B00;
+}
+
+.green {
+  color: #34A853;
+}
+
+.green:hover {
+  color: #FF8B00;
+}
+
+.blue {
+  color: #4285F4;
+}
+
+.blue:hover {
+  color: #F65314;
+}
