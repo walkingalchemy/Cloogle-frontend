@@ -4,7 +4,7 @@ class App {
     App.mainContent = document.getElementById("main-content")
     App.board = document.querySelector(".board")
     App.hints = document.getElementById("hints")
-
+    App.info = document.getElementById("info")
     App.chooseBoard = document.getElementById("choose-board")
     App.renderBoardOptions()
     App.chooseBoard.addEventListener("change", App.handleBoardChoice)
