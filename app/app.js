@@ -34,6 +34,7 @@ class App {
     App.hints.addEventListener('mouseout', App.hintHoverHandler)
   }
 
+<<<<<<< HEAD
   static hintHoverHandler(event) {
   	if ((event.target.tagName.toLowerCase() === 'dd') && (event.type === 'mouseover')){
   		event.target.style.background = 'aliceblue'
@@ -57,4 +58,10 @@ class App {
 
 
 
+=======
+  hintHoverHandler(event) {
+
+  }
+
+>>>>>>> 190d086a7fd35d7e63f35e811a710859b5e58c7d
 }
