@@ -120,7 +120,7 @@ class Board {
     input.setAttribute("maxlength", 1)
     input.className = "crossword-board__item"
     input.id = `item${cell[0]}-${cell[1]}`
-    input.value = cell[2]
+    // input.value = cell[2]
     return input
   }
 

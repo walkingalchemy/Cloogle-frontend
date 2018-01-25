@@ -15,7 +15,7 @@ class App {
   static async handleBoardChoice(event){
     let boardUrl = event.target.selectedOptions[0].value
     let boardJSON = await fetch(boardUrl).then(r => r.json())
-    new Board(boardJSON)
+    App.currentBoard = new Board(boardJSON)
   }
 
   static async renderBoardOptions(){
@@ -32,6 +32,7 @@ class App {
     App.board.innerHTML = ''
     App.board.addEventListener('mouseover', App.boardHoverHandler)
     App.board.addEventListener('mouseout', App.boardHoverHandler)
+    App.board.addEventListener('keyup', App.checkCompletion)
     App.hints.innerHTML = "<dl id='across'> <dt>Across</dt> </dl> <dl id='down'> <dt>Down</dt> </dl>"
     App.hints.addEventListener('mouseover', App.hintHoverHandler)
     App.hints.addEventListener('mouseout', App.hintHoverHandler)
@@ -115,7 +116,6 @@ class App {
     App.navBar.removeChild(App.initiateUser)
     App.navBar.append(loginForm)
 
-    // App.userInfo.append(loginForm)
     loginForm.addEventListener("submit", App.fetchUser)
   }
 
@@ -232,6 +232,36 @@ class App {
 
     App.userInfo = document.getElementById("user-info")
 
+  }
+
+  static checkCompletion(){
+    if (!Array.from(App.board.querySelectorAll("input")).some(el => el.value === "")){
+      // console.log("complete")
+      if (App.checkValid()){
+        // valid board
+        App.onSuccess()
+      } else {
+        // not valid board
+        App.onFail()
+                // console.log("not valid")
+      }
+    }
+
+
+  }
+
+  static checkValid(){
+    let inputArr = Array.from(App.board.querySelectorAll("input")).map(input => input.value)
+    let actualArr = App.currentBoard.grid.filter(cell => cell !== ".")
+    return (inputArr.join() === actualArr.join())
+  }
+
+  static onFail(){
+    alert("While you are super good at filling in squares, it appears that some of them are wrong. Keep trying!")
+  }
+
+  static onSuccess(){
+    alert("Victory!!!!!")
   }
 
 
