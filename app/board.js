@@ -15,6 +15,7 @@ class Board {
     this.renderBoard()
     this.renderBoardLabels()
     this.renderHints()
+    this.renderInfo()
     this.renderAnswerLocations()
   }
 
@@ -32,12 +33,19 @@ class Board {
   }
 
   renderAnswerLocations() {
-    for (let index in this.gridnum) {
-      if (this.gridnum[index] != 0) {
+    for (let index in this.gridnums) {
+      if (this.gridnums[index] != 0) {
         for (let idx in this.hints['across']) {
-          if (this.hints[across][idx].split('.')[0] == this.gridnum[index]) {
-            for (let char in answers['across'][idx].length) {
-              debugger
+          if (this.hints['across'][idx].split('.')[0] == this.gridnums[index]) {
+            for (let char in this.answers['across'][idx]) {
+              App.board.children[parseInt(index) + parseInt(char)].dataset.across = this.gridnums[index]
+            }
+          }
+        }
+        for (let idx in this.hints['down']) {
+          if (this.hints['down'][idx].split('.')[0] == this.gridnums[index]) {
+            for (let char in this.answers['down'][idx]) {
+              App.board.children[parseInt(index) + parseInt(char) * this.width].dataset.down = this.gridnums[index]
             }
           }
         }
@@ -73,6 +81,18 @@ class Board {
     }
   }
 
+  renderInfo() {
+    let infoDiv = document.createElement('div')
+    infoDiv.innerHTML = `
+    <p>Title: ${this.title}</p>
+    <p>Day of the Week: ${this.day}</p>
+    <p>Date: ${this.date}</p>
+    <p>Author: ${this.author}</p>
+    <p>Editor: ${this.editor}</p>
+    <p>Publisher: ${this.publisher}</p>
+    `
+    App.info.append(infoDiv)
+  }
 
 
   createLabel(label) {
