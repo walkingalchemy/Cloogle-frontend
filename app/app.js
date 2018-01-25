@@ -9,12 +9,7 @@ class App {
     App.renderBoardOptions()
     App.chooseBoard.addEventListener("change", App.handleBoardChoice)
     App.colors = ["#FBBC05","EA4335","#34A853","#4285F4"]
-    App.loginButton = document.getElementById("login")
-    App.createAccountButton = document.getElementById("create-account")
-    App.initiateUser = document.getElementById("initiate-user")
-    App.loginButton.addEventListener("click", App.renderLoginForm)
-    App.createAccountButton.addEventListener("click", App.renderCreateAccountForm)
-    App.userInfo = document.getElementById("user-info")
+    App.renderLoginInfo()
   }
 
   static async handleBoardChoice(event){
@@ -133,6 +128,7 @@ class App {
       if (userJSON["errors"]){
         alert(userJSON["errors"][0])
       } else {
+        debugger
         App.user = new User(userJSON)
         App.renderUserInfo()
       }
@@ -168,9 +164,41 @@ class App {
     let logout = document.createElement("button")
     logout.id = "logout"
     logout.innerText= "Logout"
-
+    logout.addEventListener("click", App.logoutUser)
     App.welcomeMessage.append(logout)
     App.navBar.append(App.welcomeMessage)
+  }
+
+  static logoutUser(event){
+    App.user = undefined;
+    App.navBar.removeChild(App.navBar.lastChild)
+    App.renderLoginInfo()
+  }
+
+  static renderLoginInfo(){
+    App.initiateUser = document.createElement("p")
+    App.initiateUser.id = "initiate-user"
+    App.innerText = 'Track your progress: '
+
+    App.loginButton = document.createElement("button")
+    App.loginButton.id = "login"
+    App.loginButton.innerText = "Login"
+
+    App.createAccountButton = document.createElement("button")
+    App.createAccountButton.id = "create-account"
+    App.createAccountButton.innerText = "Create Account"
+
+    App.initiateUser.append(App.loginButton)
+    App.initiateUser.append(App.createAccountButton)
+
+    App.navBar.append(App.initiateUser)
+
+
+    App.loginButton.addEventListener("click", App.renderLoginForm)
+    App.createAccountButton.addEventListener("click", App.renderCreateAccountForm)
+
+    App.userInfo = document.getElementById("user-info")
+
   }
 
 
