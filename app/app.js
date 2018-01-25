@@ -40,23 +40,56 @@ class App {
 
   static hintHoverHandler(event) {
   	if ((event.target.tagName.toLowerCase() === 'dd') && (event.type === 'mouseover')){
-      event.target.style.background = App.colors[2]
-      document.getElementById(`label-${event.target.id.split('-')[1]}`).style.background = App.colors[2]
-
+      if (event.target.parentNode.id === 'down'){
+        event.target.style.background = App.colors[2]
+        document.querySelectorAll(`[data-down='${event.target.id.split('-')[1]}']`).forEach(function(cell){ cell.style.background = App.colors[2] })
+      }
+      if (event.target.parentNode.id === 'across'){
+        event.target.style.background = App.colors[0]
+        document.querySelectorAll(`[data-across='${event.target.id.split('-')[1]}']`).forEach(function(cell){ cell.style.background = App.colors[0] })
+      }
     }
     if ((event.target.tagName.toLowerCase() === 'dd') && (event.type === 'mouseout')){
-      event.target.style.background = 'white'
-      document.getElementById(`label-${event.target.id.split('-')[1]}`).style.background = 'white'
+      event.target.style.background = ''
+      if (event.target.parentNode.id === 'down'){
+        document.querySelectorAll(`[data-down='${event.target.id.split('-')[1]}']`).forEach(function(cell){ cell.style.background = '' })
+      }
+      if (event.target.parentNode.id === 'across'){
+        document.querySelectorAll(`[data-across='${event.target.id.split('-')[1]}']`).forEach(function(cell){ cell.style.background = '' })
+      }
     }
   }
+
+
   static boardHoverHandler(event) {
-    console.log(event)
-    // if ((event.target.tagName.toLowerCase() === 'span') && (event.type === 'mouseover')){
-    //   event.target.style.background = 'aliceblue'
-    // }
-    // if ((event.target.tagName.toLowerCase() === 'span') && (event.type === 'mouseout')){
-    //   event.target.style.background = 'white'
-    // }
+    if ((event.target.tagName.toLowerCase() === 'input') && (event.type === 'mouseover')){
+
+      if (event.target.dataset.across){
+        document.querySelectorAll(`[data-across='${event.target.dataset.across}']`).forEach(function(cell){ cell.style.background = App.colors[0] })
+        document.querySelectorAll(`[data-down='${event.target.dataset.down}']`).forEach(function(cell){ cell.style.background = App.colors[2] })
+        document.querySelectorAll(`#across-${event.target.dataset.across}`).forEach(function(dd){dd.style.background = App.colors[0]})
+      }
+      if (event.target.dataset.down) {
+        document.querySelectorAll(`[data-across='${event.target.dataset.across}']`).forEach(function(cell){ cell.style.background = App.colors[0] })
+        document.querySelectorAll(`[data-down='${event.target.dataset.down}']`).forEach(function(cell){ cell.style.background = App.colors[2] })
+        document.querySelectorAll(`#down-${event.target.dataset.down}`).forEach(function(dd){dd.style.background = App.colors[2]})
+      }
+      event.target.style.background = App.colors[3]
+
+    }
+    if ((event.target.tagName.toLowerCase() === 'input') && (event.type === 'mouseout')){
+      event.target.style.background = ''
+      if (event.target.dataset.across){
+        document.querySelectorAll(`[data-across='${event.target.dataset.across}']`).forEach(function(cell){ cell.style.background = '' })
+        document.querySelectorAll(`[data-down='${event.target.dataset.down}']`).forEach(function(cell){ cell.style.background = '' })
+        document.querySelectorAll(`#across-${event.target.dataset.across}`).forEach(function(dd){dd.style.background = ''})
+      }
+      if (event.target.dataset.down) {
+        document.querySelectorAll(`[data-across='${event.target.dataset.across}']`).forEach(function(cell){ cell.style.background = '' })
+        document.querySelectorAll(`[data-down='${event.target.dataset.down}']`).forEach(function(cell){ cell.style.background = '' })
+        document.querySelectorAll(`#down-${event.target.dataset.down}`).forEach(function(dd){dd.style.background = ''})
+      }
+    }
   }
 
   static renderLoginForm(event){

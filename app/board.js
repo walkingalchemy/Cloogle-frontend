@@ -1,6 +1,6 @@
 class Board {
   constructor({answers, clues, grid, gridnums, size, author, editor, dow, date, publisher, title}){
-    this.puzzles = answers
+    this.answers = answers
     this.hints = clues
     this.grid = grid
     this.gridnums = gridnums
@@ -16,6 +16,7 @@ class Board {
     this.renderBoardLabels()
     this.renderHints()
     this.renderInfo()
+    this.renderAnswerLocations()
   }
 
   renderBoard() {
@@ -28,6 +29,27 @@ class Board {
         App.board.append(this.createInput(cell))
       }
       App.board.style.setProperty("grid-template", `repeat(${this.width},${100/this.width}%) / repeat(${this.height},${100/this.height}%)`)
+    }
+  }
+
+  renderAnswerLocations() {
+    for (let index in this.gridnums) {
+      if (this.gridnums[index] != 0) {
+        for (let idx in this.hints['across']) {
+          if (this.hints['across'][idx].split('.')[0] == this.gridnums[index]) {
+            for (let char in this.answers['across'][idx]) {
+              App.board.children[parseInt(index) + parseInt(char)].dataset.across = this.gridnums[index]
+            }
+          }
+        }
+        for (let idx in this.hints['down']) {
+          if (this.hints['down'][idx].split('.')[0] == this.gridnums[index]) {
+            for (let char in this.answers['down'][idx]) {
+              App.board.children[parseInt(index) + parseInt(char) * this.width].dataset.down = this.gridnums[index]
+            }
+          }
+        }
+      }
     }
   }
 
@@ -71,6 +93,7 @@ class Board {
     `
     App.info.append(infoDiv)
   }
+
 
   createLabel(label) {
     let outerSpan = document.createElement("span")
