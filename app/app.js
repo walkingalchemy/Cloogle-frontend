@@ -7,6 +7,10 @@ class App {
     App.info = document.getElementById("info")
     App.colors = ["#FBBC05","EA4335","#34A853","#4285F4"]
     App.renderLoginInfo()
+    App.welcomeJSON =
+    {"acrossmap":null,"admin":false,"answers":{"across":["WELCOME","CROSSWORD"],"down":["CLOOGLE","TO", "BINDING", "CRY"]},"author":"Sebastian Royer","autowrap":null,"bbars":null,"circles":null,"clues":{"across":["4. Be well and enter","5. The name of the game"], "down":["1. Powered by...","2. 'Across 4. __ Down 1!''","3. When I say ___ ...","5. ... you say ___!"]},"code":null,"copyright":"2018, Cloogle","date":"26\/91\/2018","dow":"Friday","downmap":null,"editor":"Matt McAlister","grid":['.','.','.','.','.','.','.','.','.','.','.','.','.','.','.','.','.','.','.','.','.','.','.','.','.','.','.','.','.','.','.','.','.','.','.','.','.','.','.','.','.','.','.','.','.','.','.','.','.','.','.','.','.','.','.','.','.','c','.','t','.','.','.','b','.','.','.','.','w','e','l','c','o','m','e','.','i','.','.','.','.','.','.','o','.','.','.','.','.','n','.','.','.','.','c','r','o','s','s','w','o','r','d','.','.','.','.','r','.','g','.','.','.','.','.','i','.','.','.','.','y','.','l','.','.','.','.','.','n','.','.','.','.','.','.','e','.','.','.','.','.','g','.','.','.','.','.','.','.','.','.','.','.','.','.','.','.','.','.','.','.','.','.','.','.','.','.','.','.'],"gridnums":[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,2,0,0,0,3,0,0,0,0,4,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,5,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],"hold":null,"id":null,"id2":null,"interpretcolors":null,"jnotes":null,"key":null,"mini":null,"notepad":null,"publisher":"Cloogle Adventures","rbars":null,"shadecircles":null,"size":{"cols":13,"rows":13},"title":"WELCOME CROSSWORD","track":null,"type":null}
+    App.welcomeBoard = new Board(0,App.welcomeJSON)
+
   }
 
   static async handleBoardChoice(event){
@@ -304,7 +308,14 @@ class App {
 
   static checkValid(){
     let inputArr = Array.from(App.board.querySelectorAll("input")).map(input => input.value.toUpperCase())
-    let actualArr = App.currentBoard.grid.filter(cell => cell !== ".")
+    let actualArr = ''
+    if (App.currentBoard){
+      actualArr = App.currentBoard.grid.filter(cell => cell !== ".")
+    } else {
+      actualArr = App.welcomeBoard.grid.filter(cell => cell !== ".").map(value => value.toUpperCase())
+
+    }
+
     return (inputArr.join() === actualArr.join())
   }
 
@@ -314,14 +325,17 @@ class App {
 
   static async onSuccess(){
     alert("Victory!!!!!")
-    fetch(`http://localhost:3000/api/v1/board_users/${App.user.id}/${App.currentBoard.id}`,{
-      method: "PATCH",
-      headers: {
-          'Content-Type': 'application/json',
-          'Accept': 'application/json'
-        },
-      body: JSON.stringify({"user_id": App.user.id, "board_id": App.currentBoard.id, "completed": true})
-    })
+    if (App.user){
+      fetch(`http://localhost:3000/api/v1/board_users/${App.user.id}/${App.currentBoard.id}`,{
+        method: "PATCH",
+        headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json'
+          },
+        body: JSON.stringify({"user_id": App.user.id, "board_id": App.currentBoard.id, "completed": true})
+      })
+    }
+
 
   }
 
@@ -341,7 +355,9 @@ class App {
 
   static handleKeyInput(event){
     App.checkCompletion()
-    App.updateUserProgress(event)
+    if (App.user) {
+      App.updateUserProgress(event)
+    }
   }
 
   static async updateUserProgress(event){
