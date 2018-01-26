@@ -16,6 +16,7 @@ class App {
 
     if (event.target.id === "non-user-boards"){
       App.createBoardUser()
+      App.userBoards.append(event.target.selectedOptions[0])
     } else {
       App.getUserProgress()
     }
@@ -35,7 +36,10 @@ class App {
     App.board.innerHTML = ''
     App.board.addEventListener('mouseover', App.boardHoverHandler)
     App.board.addEventListener('mouseout', App.boardHoverHandler)
+    App.board.addEventListener("focusin", App.boardFocusHandler)
+    App.board.addEventListener("focusout", App.boardFocusHandler)
     App.board.addEventListener('keyup', App.handleKeyInput)
+    App.board.addEventListener('keydown', App.handleKeyDown)
     App.hints.innerHTML = "<dl id='across'> <dt>Across</dt> </dl> <dl id='down'> <dt>Down</dt> </dl>"
     App.hints.addEventListener('mouseover', App.hintHoverHandler)
     App.hints.addEventListener('mouseout', App.hintHoverHandler)
@@ -82,6 +86,36 @@ class App {
 
     }
     if ((event.target.tagName.toLowerCase() === 'input') && (event.type === 'mouseout')){
+      event.target.style.background = ''
+      if (event.target.dataset.across){
+        document.querySelectorAll(`[data-across='${event.target.dataset.across}']`).forEach(function(cell){ cell.style.background = '' })
+        document.querySelectorAll(`[data-down='${event.target.dataset.down}']`).forEach(function(cell){ cell.style.background = '' })
+        document.querySelectorAll(`#across-${event.target.dataset.across}`).forEach(function(dd){dd.style.background = ''})
+      }
+      if (event.target.dataset.down) {
+        document.querySelectorAll(`[data-across='${event.target.dataset.across}']`).forEach(function(cell){ cell.style.background = '' })
+        document.querySelectorAll(`[data-down='${event.target.dataset.down}']`).forEach(function(cell){ cell.style.background = '' })
+        document.querySelectorAll(`#down-${event.target.dataset.down}`).forEach(function(dd){dd.style.background = ''})
+      }
+    }
+  }
+
+  static boardFocusHandler(event) {
+    if ((event.target.tagName.toLowerCase() === 'input') && (event.type === 'focusin')){
+      if (event.target.dataset.across){
+        document.querySelectorAll(`[data-across='${event.target.dataset.across}']`).forEach(function(cell){ cell.style.background = App.colors[0] })
+        document.querySelectorAll(`[data-down='${event.target.dataset.down}']`).forEach(function(cell){ cell.style.background = App.colors[2] })
+        document.querySelectorAll(`#across-${event.target.dataset.across}`).forEach(function(dd){dd.style.background = App.colors[0]})
+      }
+      if (event.target.dataset.down) {
+        document.querySelectorAll(`[data-across='${event.target.dataset.across}']`).forEach(function(cell){ cell.style.background = App.colors[0] })
+        document.querySelectorAll(`[data-down='${event.target.dataset.down}']`).forEach(function(cell){ cell.style.background = App.colors[2] })
+        document.querySelectorAll(`#down-${event.target.dataset.down}`).forEach(function(dd){dd.style.background = App.colors[2]})
+      }
+      event.target.style.background = App.colors[3]
+
+    }
+    if ((event.target.tagName.toLowerCase() === 'input') && (event.type === 'focusout')){
       event.target.style.background = ''
       if (event.target.dataset.across){
         document.querySelectorAll(`[data-across='${event.target.dataset.across}']`).forEach(function(cell){ cell.style.background = '' })
@@ -340,8 +374,76 @@ class App {
   }
 
   static handleKeyInput(event){
-    App.checkCompletion()
-    App.updateUserProgress(event)
+      App.checkCompletion()
+      App.updateUserProgress(event)
+  }
+
+  static handleKeyDown(event){
+    if (event.key === "ArrowLeft"){
+      App.focusOnPreviousInputInRow(event)
+    } else if (event.key === "ArrowRight"){
+      App.focusOnNextInputInRow(event)
+    } else if (event.key === "ArrowUp"){
+      App.focusOnPreviousInputInColumn(event)
+    } else if (event.key === "ArrowDown"){
+      App.focusOnNextInputInColumn(event)
+    }
+  }
+
+  static focusOnNextInputInRow(event){
+    let coordinates = event.target.id.split("item")[1].split("-")// ["3","2"]
+    let row = parseInt(coordinates[0])
+    let column = parseInt(coordinates[1])
+    let newColumn;
+    (column + 1 === App.currentBoard.width) ? newColumn = 0 : newColumn = column + 1;
+    let nextElement = document.getElementById(`item${row}-${newColumn}`)
+    while (nextElement.tagName === "SPAN"){
+      (newColumn + 1 === App.currentBoard.width) ? newColumn = 0 : newColumn = newColumn + 1;
+      nextElement = document.getElementById(`item${row}-${newColumn}`)
+    }
+    nextElement.focus()
+  }
+
+  static focusOnPreviousInputInRow(event){
+    let coordinates = event.target.id.split("item")[1].split("-")// ["3","2"]
+    let row = parseInt(coordinates[0])
+    let column = parseInt(coordinates[1])
+    let newColumn;
+    (column === 0) ? newColumn = App.currentBoard.width-1 : newColumn = column - 1;
+    let previousElement = document.getElementById(`item${row}-${newColumn}`)
+    while (previousElement.tagName === "SPAN"){
+      (newColumn === 0) ? newColumn = App.currentBoard.width-1 : newColumn = newColumn - 1;
+      previousElement = document.getElementById(`item${row}-${newColumn}`)
+    }
+    previousElement.focus()
+  }
+
+  static focusOnNextInputInColumn(event){
+    let coordinates = event.target.id.split("item")[1].split("-")// ["3","2"]
+    let row = parseInt(coordinates[0])
+    let column = parseInt(coordinates[1])
+    let newRow;
+    (row + 1 === App.currentBoard.height) ? newRow = 0 : newRow = row + 1;
+    let nextElement = document.getElementById(`item${newRow}-${column}`)
+    while (nextElement.tagName === "SPAN"){
+      (newRow + 1 === App.currentBoard.height) ? newRow = 0 : newRow = newRow + 1;
+      nextElement = document.getElementById(`item${newRow}-${column}`)
+    }
+    nextElement.focus()
+  }
+
+  static focusOnPreviousInputInColumn(event){
+    let coordinates = event.target.id.split("item")[1].split("-")// ["3","2"]
+    let row = parseInt(coordinates[0])
+    let column = parseInt(coordinates[1])
+    let newRow;
+    (row === 0) ? newRow = App.currentBoard.height-1 : newRow = row - 1;
+    let previousElement = document.getElementById(`item${newRow}-${column}`)
+    while (previousElement.tagName === "SPAN"){
+      (newRow === 0) ? newRow = App.currentBoard.height-1 : newRow = newRow - 1;
+      previousElement = document.getElementById(`item${newRow}-${column}`)
+    }
+    previousElement.focus()
   }
 
   static async updateUserProgress(event){
