@@ -29,7 +29,7 @@ class Board {
       } else {
         App.board.append(this.createInput(cell))
       }
-      App.board.style.setProperty("grid-template", `repeat(${this.width},${100/this.width}%) / repeat(${this.height},${100/this.height}%)`)
+      App.board.style.setProperty("grid-template", `repeat(${this.height},${100/this.height}%) / repeat(${this.width},${100/this.width}%)`)
     }
   }
 
@@ -59,6 +59,7 @@ class Board {
   renderBoardLabels() {
     let boardLabels = document.createElement('div')
     boardLabels.className = "board crossword-board--labels"
+    boardLabels.style.setProperty("grid-template", `repeat(${this.height},${100/this.height}%) / repeat(${this.width},${100/this.width}%)`)
     for(let idx in this.gridnums){
       if (this.gridnums[idx] !== 0 ){
         let label = this.labelFromIndex(idx)
@@ -104,6 +105,7 @@ class Board {
     outerSpan.id = `label-${label[2]}`
     let innerSpan = document.createElement("span")
     innerSpan.className = "crossword-board__item-label-text"
+    // innerSpan.style.setProperty('font-size', `1.${10*Math.ceil(this.width/10) - this.width}vmin`)  #NOT WORKING scale label to board width
     innerSpan.innerText = `${label[2]}`
     outerSpan.append(innerSpan)
     outerSpan.style.setProperty('grid-area', `${label[0]+1}/${label[1]+1}/${label[0]+1}/${label[1]+1}`)
