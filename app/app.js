@@ -345,7 +345,7 @@ class App {
   }
 
   static async updateUserProgress(event){
-    let response = await fetch(`http://localhost:3000/api/v1/board_users/${App.user.id}/${App.currentBoard.id}/progress`,{
+    let response = await fetch(`http://localhost:3000/api/v1/board_users/progress/${App.user.id}/${App.currentBoard.id}`,{
       method: "PATCH",
       headers: {
           'Content-Type': 'application/json',
@@ -361,7 +361,9 @@ class App {
   static async getUserProgress(){
     let response = await fetch(`http://localhost:3000/api/v1/board_users/${App.user.id}/${App.currentBoard.id}`)
       .then(r => r.json())
-    debugger
+    for (let index in response["board_user"]["progress"]){
+      App.board.children[index].value = response["board_user"]["progress"][index]
+    }
   }
 
 
