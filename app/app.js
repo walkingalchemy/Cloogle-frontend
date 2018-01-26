@@ -188,6 +188,7 @@ class App {
 
   static async createUser(event){
     event.preventDefault()
+    App.renderLoading()
     if (App.username.value.match(/\W/)){
       alert("Username cannot contain non-letter characters.")
     } else {
@@ -210,6 +211,7 @@ class App {
 
   static async fetchUser(event){
     event.preventDefault()
+    App.renderLoading()
     if (App.username.value.match(/\W/)){
       alert("Username cannot contain non-letter characters.")
     } else {
@@ -229,8 +231,17 @@ class App {
     }
   }
 
-  static renderUserInfo(){
+  static renderLoading(){
     App.navBar.removeChild(App.navBar.lastChild)
+    App.loader = document.createElement("div")
+    App.loader.className = "loader"
+    App.navBar.append(App.loader)
+  }
+
+
+
+  static renderUserInfo(){
+    App.navBar.removeChild(App.loader)
     App.renderUserDropdowns()
     App.welcomeMessage = document.createElement("p")
     App.welcomeMessage.innerText = `Welcome, ${App.user.name}!  `
