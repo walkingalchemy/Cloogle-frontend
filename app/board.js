@@ -105,6 +105,7 @@ class Board {
     outerSpan.id = `label-${label[2]}`
     let innerSpan = document.createElement("span")
     innerSpan.className = "crossword-board__item-label-text"
+    // innerSpan.style.setProperty('font-size', `1.${10*Math.ceil(this.width/10) - this.width}vmin`)  #NOT WORKING scale label to board width
     innerSpan.innerText = `${label[2]}`
     outerSpan.append(innerSpan)
     outerSpan.style.setProperty('grid-area', `${label[0]+1}/${label[1]+1}/${label[0]+1}/${label[1]+1}`)
