@@ -1,18 +1,25 @@
 class App {
   static init(){
+    // initialize major element selectors on page load
     App.navBar = document.getElementById("nav-bar")
     App.mainContent = document.getElementById("main-content")
     App.board = document.querySelector(".board")
     App.hints = document.getElementById("hints")
     App.info = document.getElementById("info")
+    // quick and dirty color selector (could use improvement)
     App.colors = ["#FBBC05","EA4335","#34A853","#4285F4"]
+
+    // show nav bar login on page load
     App.renderLoginInfo()
+
+    // show welcome puzzle using spoofed version of the external api json
     App.welcomeJSON =
     {"acrossmap":null,"admin":false,"answers":{"across":["WELCOME","CROSSWORD"],"down":["CLOOGLE","TO", "BINDING", "CRY"]},"author":"Sebastian Royer","autowrap":null,"bbars":null,"circles":null,"clues":{"across":["4. Be well and enter","5. The name of the game"], "down":["1. Powered by...","2. 'Across 4. __ Down 1!''","3. When I say ___ ...","5. ... you say ___!"]},"code":null,"copyright":"2018, Cloogle","date":"26\/91\/2018","dow":"Friday","downmap":null,"editor":"Matt McAlister","grid":['.','.','C','.','T','.','.','.','B','W','E','L','C','O','M','E','.','I','.','.','O','.','.','.','.','.','N','C','R','O','S','S','W','O','R','D','R','.','G','.','.','.','.','.','I','Y','.','L','.','.','.','.','.','N','.','.','E','.','.','.','.','.','G'],"gridnums":[0,0,1,0,2,0,0,0,3,4,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,5,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],"hold":null,"id":null,"id2":null,"interpretcolors":null,"jnotes":null,"key":null,"mini":null,"notepad":null,"publisher":"Cloogle Adventures","rbars":null,"shadecircles":null,"size":{"cols":9,"rows":7},"title":"WELCOME CROSSWORD","track":null,"type":null}
     App.currentBoard = new Board(0,App.welcomeJSON)
 
   }
 
+  // HANDLERS
   static async handleBoardChoice(event){
     let boardUrl = event.target.selectedOptions[0].value
     let boardJSON = await fetch(boardUrl).then(r => r.json())
@@ -26,29 +33,6 @@ class App {
     }
   }
 
-  static async renderBoardOptions(){
-    let boards = await fetch("http://localhost:3000/api/v1/boards").then(r => r.json())
-    for (let apiBoard of boards) {
-      let option = document.createElement("option")
-      option.value = apiBoard.board_url
-      option.innerText = apiBoard.title
-      App.chooseBoard.append(option)
-    }
-  }
-
-  static resetBoard(){
-    App.board.innerHTML = ''
-    App.board.addEventListener('mouseover', App.boardHoverHandler)
-    App.board.addEventListener('mouseout', App.boardHoverHandler)
-    App.board.addEventListener("focusin", App.boardFocusHandler)
-    App.board.addEventListener("focusout", App.boardFocusHandler)
-    App.board.addEventListener('keyup', App.handleKeyInput)
-    App.board.addEventListener('keydown', App.handleKeyDown)
-    App.hints.innerHTML = "<dl id='across'> <dt>Across</dt> </dl> <dl id='down'> <dt>Down</dt> </dl>"
-    App.hints.addEventListener('mouseover', App.hintHoverHandler)
-    App.hints.addEventListener('mouseout', App.hintHoverHandler)
-    App.info.innerHTML = ''
-  }
 
   static hintHoverHandler(event) {
   	if ((event.target.tagName.toLowerCase() === 'dd') && (event.type === 'mouseover')){
@@ -71,7 +55,6 @@ class App {
       }
     }
   }
-
 
   static boardHoverHandler(event) {
     if ((event.target.tagName.toLowerCase() === 'input') && (event.type === 'mouseover')){
@@ -133,6 +116,187 @@ class App {
       }
     }
   }
+
+  static handleKeyInput(event){
+    App.checkCompletion()
+    if (App.user) {
+      App.updateUserProgress(event)
+    }
+  }
+
+  static handleKeyDown(event){
+    if (event.key === "ArrowLeft"){
+      App.focusOnPreviousInputInRow(event)
+    } else if (event.key === "ArrowRight"){
+      App.focusOnNextInputInRow(event)
+    } else if (event.key === "ArrowUp"){
+      App.focusOnPreviousInputInColumn(event)
+    } else if (event.key === "ArrowDown"){
+      App.focusOnNextInputInColumn(event)
+    }
+  }
+
+
+  // PAGE RENDERS
+  static async renderBoardOptions(){
+    let boards = await fetch("http://localhost:3000/api/v1/boards").then(r => r.json())
+    for (let apiBoard of boards) {
+      let option = document.createElement("option")
+      option.value = apiBoard.board_url
+      option.innerText = apiBoard.title
+      App.chooseBoard.append(option)
+    }
+  }
+
+  static renderBoardSelector(){
+    App.chooseBoard = document.createElement("select")
+    App.chooseBoard.prompt = "true"
+    App.navBar.append(App.chooseBoard)
+    App.chooseBoard.innerHTML = `<option value='' disabled selected hidden>Please choose...</option>`
+    App.renderBoardOptions()
+  }
+
+  static async createBoardUser(){
+    let response = await fetch(`http://localhost:3000/api/v1/board_users/`,{
+      method: "POST",
+      headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json'
+        },
+      body: JSON.stringify({"user_id": App.user.id, "board_id": App.currentBoard.id})
+    }).then(r => r.json())
+    if (response['errors']){
+      console.log(response['errors'][0])
+    }
+  }
+
+
+
+  static resetBoard(){
+    App.board.innerHTML = ''
+    App.board.addEventListener('mouseover', App.boardHoverHandler)
+    App.board.addEventListener('mouseout', App.boardHoverHandler)
+    App.board.addEventListener("focusin", App.boardFocusHandler)
+    App.board.addEventListener("focusout", App.boardFocusHandler)
+    App.board.addEventListener('keyup', App.handleKeyInput)
+    App.board.addEventListener('keydown', App.handleKeyDown)
+    App.hints.innerHTML = "<dl id='across'> <dt>Across</dt> </dl> <dl id='down'> <dt>Down</dt> </dl>"
+    App.hints.addEventListener('mouseover', App.hintHoverHandler)
+    App.hints.addEventListener('mouseout', App.hintHoverHandler)
+    App.info.innerHTML = ''
+  }
+
+
+  // BOARD INTERACTIONS
+  static checkCompletion(){
+    if (!Array.from(App.board.querySelectorAll("input")).some(el => el.value === "")){
+      // console.log("complete")
+      if (App.checkValid()){
+        // valid board
+        App.onSuccess()
+      } else {
+        // not valid board
+        App.onFail()
+                // console.log("not valid")
+      }
+    }
+
+
+  }
+
+  static checkValid(){
+    let inputArr = Array.from(App.board.querySelectorAll("input")).map(input => input.value.toUpperCase())
+    let actualArr = ''
+    if (App.currentBoard){
+      actualArr = App.currentBoard.grid.filter(cell => cell !== ".")
+    } else {
+      actualArr = App.welcomeBoard.grid.filter(cell => cell !== ".").map(value => value.toUpperCase())
+
+    }
+
+    return (inputArr.join() === actualArr.join())
+  }
+
+  static onFail(){
+    alert("While you are super good at filling in squares, it appears that some of them are wrong. Keep trying!")
+  }
+
+  static async onSuccess(){
+    alert("Victory!!!!!")
+    if (App.user){
+      fetch(`http://localhost:3000/api/v1/board_users/${App.user.id}/${App.currentBoard.id}`,{
+        method: "PATCH",
+        headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json'
+          },
+        body: JSON.stringify({"user_id": App.user.id, "board_id": App.currentBoard.id, "completed": true})
+      })
+    }
+
+
+  }
+
+
+
+  static focusOnNextInputInRow(event){
+    let coordinates = event.target.id.split("item")[1].split("-")// ["3","2"]
+    let row = parseInt(coordinates[0])
+    let column = parseInt(coordinates[1])
+    let newColumn;
+    (column + 1 === App.currentBoard.width) ? newColumn = 0 : newColumn = column + 1;
+    let nextElement = document.getElementById(`item${row}-${newColumn}`)
+    while (nextElement.tagName === "SPAN"){
+      (newColumn + 1 === App.currentBoard.width) ? newColumn = 0 : newColumn = newColumn + 1;
+      nextElement = document.getElementById(`item${row}-${newColumn}`)
+    }
+    nextElement.focus()
+  }
+
+  static focusOnPreviousInputInRow(event){
+    let coordinates = event.target.id.split("item")[1].split("-")// ["3","2"]
+    let row = parseInt(coordinates[0])
+    let column = parseInt(coordinates[1])
+    let newColumn;
+    (column === 0) ? newColumn = App.currentBoard.width-1 : newColumn = column - 1;
+    let previousElement = document.getElementById(`item${row}-${newColumn}`)
+    while (previousElement.tagName === "SPAN"){
+      (newColumn === 0) ? newColumn = App.currentBoard.width-1 : newColumn = newColumn - 1;
+      previousElement = document.getElementById(`item${row}-${newColumn}`)
+    }
+    previousElement.focus()
+  }
+
+  static focusOnNextInputInColumn(event){
+    let coordinates = event.target.id.split("item")[1].split("-")// ["3","2"]
+    let row = parseInt(coordinates[0])
+    let column = parseInt(coordinates[1])
+    let newRow;
+    (row + 1 === App.currentBoard.height) ? newRow = 0 : newRow = row + 1;
+    let nextElement = document.getElementById(`item${newRow}-${column}`)
+    while (nextElement.tagName === "SPAN"){
+      (newRow + 1 === App.currentBoard.height) ? newRow = 0 : newRow = newRow + 1;
+      nextElement = document.getElementById(`item${newRow}-${column}`)
+    }
+    nextElement.focus()
+  }
+
+  static focusOnPreviousInputInColumn(event){
+    let coordinates = event.target.id.split("item")[1].split("-")// ["3","2"]
+    let row = parseInt(coordinates[0])
+    let column = parseInt(coordinates[1])
+    let newRow;
+    (row === 0) ? newRow = App.currentBoard.height-1 : newRow = row - 1;
+    let previousElement = document.getElementById(`item${newRow}-${column}`)
+    while (previousElement.tagName === "SPAN"){
+      (newRow === 0) ? newRow = App.currentBoard.height-1 : newRow = newRow - 1;
+      previousElement = document.getElementById(`item${newRow}-${column}`)
+    }
+    previousElement.focus()
+  }
+
+
+  // USER
 
   static renderLoginForm(event){
     event.preventDefault();
@@ -326,152 +490,9 @@ class App {
 
   }
 
-  static checkCompletion(){
-    if (!Array.from(App.board.querySelectorAll("input")).some(el => el.value === "")){
-      // console.log("complete")
-      if (App.checkValid()){
-        // valid board
-        App.onSuccess()
-      } else {
-        // not valid board
-        App.onFail()
-                // console.log("not valid")
-      }
-    }
 
 
-  }
-
-  static renderBoardSelector(){
-    App.chooseBoard = document.createElement("select")
-    App.chooseBoard.prompt = "true"
-    App.navBar.append(App.chooseBoard)
-    App.chooseBoard.innerHTML = `<option value='' disabled selected hidden>Please choose...</option>`
-    App.renderBoardOptions()
-  }
-
-
-  static checkValid(){
-    let inputArr = Array.from(App.board.querySelectorAll("input")).map(input => input.value.toUpperCase())
-    let actualArr = ''
-    if (App.currentBoard){
-      actualArr = App.currentBoard.grid.filter(cell => cell !== ".")
-    } else {
-      actualArr = App.welcomeBoard.grid.filter(cell => cell !== ".").map(value => value.toUpperCase())
-
-    }
-
-    return (inputArr.join() === actualArr.join())
-  }
-
-  static onFail(){
-    alert("While you are super good at filling in squares, it appears that some of them are wrong. Keep trying!")
-  }
-
-  static async onSuccess(){
-    alert("Victory!!!!!")
-    if (App.user){
-      fetch(`http://localhost:3000/api/v1/board_users/${App.user.id}/${App.currentBoard.id}`,{
-        method: "PATCH",
-        headers: {
-            'Content-Type': 'application/json',
-            'Accept': 'application/json'
-          },
-        body: JSON.stringify({"user_id": App.user.id, "board_id": App.currentBoard.id, "completed": true})
-      })
-    }
-
-
-  }
-
-  static async createBoardUser(){
-    let response = await fetch(`http://localhost:3000/api/v1/board_users/`,{
-      method: "POST",
-      headers: {
-          'Content-Type': 'application/json',
-          'Accept': 'application/json'
-        },
-      body: JSON.stringify({"user_id": App.user.id, "board_id": App.currentBoard.id})
-    }).then(r => r.json())
-    if (response['errors']){
-      console.log(response['errors'][0])
-    }
-  }
-
-  static handleKeyInput(event){
-    App.checkCompletion()
-    if (App.user) {
-      App.updateUserProgress(event)
-    }
-  }
-
-  static handleKeyDown(event){
-    if (event.key === "ArrowLeft"){
-      App.focusOnPreviousInputInRow(event)
-    } else if (event.key === "ArrowRight"){
-      App.focusOnNextInputInRow(event)
-    } else if (event.key === "ArrowUp"){
-      App.focusOnPreviousInputInColumn(event)
-    } else if (event.key === "ArrowDown"){
-      App.focusOnNextInputInColumn(event)
-    }
-  }
-
-  static focusOnNextInputInRow(event){
-    let coordinates = event.target.id.split("item")[1].split("-")// ["3","2"]
-    let row = parseInt(coordinates[0])
-    let column = parseInt(coordinates[1])
-    let newColumn;
-    (column + 1 === App.currentBoard.width) ? newColumn = 0 : newColumn = column + 1;
-    let nextElement = document.getElementById(`item${row}-${newColumn}`)
-    while (nextElement.tagName === "SPAN"){
-      (newColumn + 1 === App.currentBoard.width) ? newColumn = 0 : newColumn = newColumn + 1;
-      nextElement = document.getElementById(`item${row}-${newColumn}`)
-    }
-    nextElement.focus()
-  }
-
-  static focusOnPreviousInputInRow(event){
-    let coordinates = event.target.id.split("item")[1].split("-")// ["3","2"]
-    let row = parseInt(coordinates[0])
-    let column = parseInt(coordinates[1])
-    let newColumn;
-    (column === 0) ? newColumn = App.currentBoard.width-1 : newColumn = column - 1;
-    let previousElement = document.getElementById(`item${row}-${newColumn}`)
-    while (previousElement.tagName === "SPAN"){
-      (newColumn === 0) ? newColumn = App.currentBoard.width-1 : newColumn = newColumn - 1;
-      previousElement = document.getElementById(`item${row}-${newColumn}`)
-    }
-    previousElement.focus()
-  }
-
-  static focusOnNextInputInColumn(event){
-    let coordinates = event.target.id.split("item")[1].split("-")// ["3","2"]
-    let row = parseInt(coordinates[0])
-    let column = parseInt(coordinates[1])
-    let newRow;
-    (row + 1 === App.currentBoard.height) ? newRow = 0 : newRow = row + 1;
-    let nextElement = document.getElementById(`item${newRow}-${column}`)
-    while (nextElement.tagName === "SPAN"){
-      (newRow + 1 === App.currentBoard.height) ? newRow = 0 : newRow = newRow + 1;
-      nextElement = document.getElementById(`item${newRow}-${column}`)
-    }
-    nextElement.focus()
-  }
-
-  static focusOnPreviousInputInColumn(event){
-    let coordinates = event.target.id.split("item")[1].split("-")// ["3","2"]
-    let row = parseInt(coordinates[0])
-    let column = parseInt(coordinates[1])
-    let newRow;
-    (row === 0) ? newRow = App.currentBoard.height-1 : newRow = row - 1;
-    let previousElement = document.getElementById(`item${newRow}-${column}`)
-    while (previousElement.tagName === "SPAN"){
-      (newRow === 0) ? newRow = App.currentBoard.height-1 : newRow = newRow - 1;
-      previousElement = document.getElementById(`item${newRow}-${column}`)
-    }
-    previousElement.focus()
-  }
+  // USER SAVE
 
   static async updateUserProgress(event){
     let response = await fetch(`http://localhost:3000/api/v1/board_users/progress/${App.user.id}/${App.currentBoard.id}`,{
