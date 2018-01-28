@@ -87,6 +87,7 @@
 .crossword-board__item {
 	border: 1px solid #000000;
 	background: transparent;
+  /* opacity: .4; */
 	position: relative;
 	z-index: 100;
 	text-align: center;
