@@ -7,7 +7,7 @@ Cloogle is a web based crossword app allowing users to complete and save crosswo
 
 This is the repository for the [ES6 JavaScript](https://developer.mozilla.org/en-US/docs/Web/JavaScript) frontend. The backend API repository resides at: [Cloogle-Backend](https://github.com/walkingalchemy/Cloogle-backend).
 
-# Demo
+## Demo
 <a href="https://youtu.be/fZyNg0_bY18" target="_blank"><img src="http://img.youtube.com/vi/fZyNg0_bY18/0.jpg" 
 alt="Cloogle Thumbnail" width="240" height="180" border="10" /></a>
 
